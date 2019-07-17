@@ -1,0 +1,39 @@
+.el-row {
+    margin-bottom: 20px;
+}
+
+.el-col {
+    border-radius: 4px;
+}
+
+.top {
+    height: 40px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.top .login-btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 12px;
+}
+
+.top .title {
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+.panel {
+    width: 100%;
+    max-width: 600px;
+    margin: 120px auto;
+    padding: 5px;
+    text-align: center;
+}
+
+.panel img {
+    margin: 30px auto;
+    max-width: 90%;
+    display: block;
+}
