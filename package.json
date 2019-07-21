@@ -10,11 +10,15 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-decoupled-document": "^12.3.1",
+    "@tinymce/tinymce-vue": "^2.1.0",
     "element-ui": "^2.10.1",
+    "tinymce": "^5.0.12",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-easy-image": "^11.0.4",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",

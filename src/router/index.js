@@ -31,6 +31,18 @@ export default new Router({
             }]
         },
         {
+            path: "/tinymce",
+            name: "tinymce",
+            component: () =>
+                import ('@/components/tinymce/TinyMCE')
+        },
+        {
+            path: "/ckeditor",
+            name: "ckeditor",
+            component: () =>
+                import ('@/components/ckeditor/CKEditor')
+        },
+        {
             path: "/event",
             component: Layout,
             redirect: "/event/list",
