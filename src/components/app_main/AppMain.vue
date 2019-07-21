@@ -1,44 +1,18 @@
 <template>
-	<div class="tabel-wrapper">
-		
-	</div>
+  <div class="app-main">
+    <router-view />
+  </div>
 </template>
 
   <script>
-	export default {
-		data() {
-			return {
-				tableData: [
-					{
-						date: "2016-05-02",
-						name: "王小虎",
-						address: "上海市普陀区金沙江路 1518 弄"
-					},
-					{
-						date: "2016-05-04",
-						name: "王小虎",
-						address: "上海市普陀区金沙江路 1517 弄"
-					},
-					{
-						date: "2016-05-01",
-						name: "王小虎",
-						address: "上海市普陀区金沙江路 1519 弄"
-					},
-					{
-						date: "2016-05-03",
-						name: "王小虎",
-						address: "上海市普陀区金沙江路 1516 弄"
-					}
-				]
-			};
-		}
-	};
+export default {
+
+};
 </script>
 
 <style>
-.tabel-wrapper{
-  width: 90%;
-  background-color: red;
-  height: 300px;
+.app-main {
+	width: 95%;
+	margin: 0 auto;
 }
 </style>

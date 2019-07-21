@@ -21,6 +21,36 @@ export default new Router({
         {
             path: "",
             component: Layout,
+            redirect: "/home",
+            children: [{
+                path: "home",
+                name: "home",
+                component: () =>
+                    import ("@/views/home/index"),
+                meta: { title: "首页", icon: "icon" },
+            }]
+        },
+        {
+            path: "/event",
+            component: Layout,
+            redirect: "/event/list",
+            name: "event",
+            meta: { title: '大事记', icon: '' },
+            children: [{
+                    path: "list",
+                    name: "list",
+                    component: () =>
+                        import ("@/views/events/EventList"),
+                    meta: { title: "事记列表", icon: "" }
+                },
+                {
+                    path: "add",
+                    name: "add",
+                    component: () =>
+                        import ("@/views/events/EventAdd"),
+                    meta: { title: "添加事记", icon: "" }
+                }
+            ]
         }
 
     ]
