@@ -31,12 +31,6 @@ export default new Router({
             }]
         },
         {
-            path: "/ckeditor",
-            name: "ckeditor",
-            component: () =>
-                import ('@/components/ckeditor/CKEditor')
-        },
-        {
             path: "/event",
             component: Layout,
             redirect: "/event/list",

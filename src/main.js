@@ -8,14 +8,15 @@ import '@/styles/index.css'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI, router);
 
-/* eslint-disable no-new */
 new Vue({
     el: '#app',
     router,
+    store,
     render: h => h(App),
     components: { App },
     template: '<App/>'
