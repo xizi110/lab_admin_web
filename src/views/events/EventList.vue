@@ -120,7 +120,7 @@ export default {
           brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
           publishDate: "2019-01-03",
           carousel: "否",
-          carouselImgLink: "无数据",
+          carouselImgLink: "",
           carouselEndDate: "无数据"
         },
         {
@@ -129,7 +129,7 @@ export default {
           brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
           publishDate: "2019-01-03",
           carousel: "否",
-          carouselImgLink: "无数据",
+          carouselImgLink: "",
           carouselEndDate: "无数据"
         },
         {
@@ -138,7 +138,7 @@ export default {
           brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
           publishDate: "2019-01-03",
           carousel: "否",
-          carouselImgLink: "无数据",
+          carouselImgLink: "",
           carouselEndDate: "无数据"
         },
         {
@@ -147,7 +147,7 @@ export default {
           brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
           publishDate: "2019-01-03",
           carousel: "否",
-          carouselImgLink: "无数据",
+          carouselImgLink: "",
           carouselEndDate: "无数据"
         }
       ]

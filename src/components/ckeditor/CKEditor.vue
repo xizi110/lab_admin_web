@@ -106,10 +106,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 #editor {
   height: 650px;
   margin-bottom: 100px;
   border: 1px solid #b3b3b3;
+}
+#toolbar .ck.ck-reset_all, .ck.ck-reset_all *{
+  white-space: pre-wrap;
+  overflow: hidden;
 }
 </style>
