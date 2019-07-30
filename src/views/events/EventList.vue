@@ -89,10 +89,17 @@
 </template>
 
 <script>
+
+import {eventList} from '@/api/event'
+
 export default {
   data() {
     return {
-      form: {},
+      form: {
+        title: "",
+        author: "",
+        publishDate: "",
+      },
       tableData: [
         {
           title: "2019中国工程机器人大赛暨国际公开赛",
@@ -154,14 +161,24 @@ export default {
     };
   },
   methods: {
+    listEvent(){
+      eventList(this.form).then(response => {
+        this.tableData = response.data.currentPageData
+      })
+    },
+
     setCurrent(row) {
       this.$refs.singleTable.setCurrentRow(row);
     },
     handleCurrentChange(val) {
       this.currentRow = val;
     }
-  }
+  },
+   created() {
+    this.listEvent();
+  },
 };
+
 </script>
 
 <style>

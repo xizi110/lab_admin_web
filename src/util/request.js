@@ -5,14 +5,18 @@ import { Message, MessageBox } from 'element-ui'
 
 const request = Axios.create({
     baseURL: "http://localhost",
-    timeout: 15000,
-    headers: { 'Authorization': "" },
+    // timeout: 15000,
+    // headers: { 'Authorization': "" },
 });
 
 // request拦截器
 request.interceptors.request.use(config => {
-    if (store.state.token) {
-        config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+  // alert(store.state.token)
+    var token = getToken();
+    console.log(token)
+    console.log(getToken())
+    if (token) {
+        config.headers['Authorization'] = token // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     return config
 }, error => {
@@ -29,7 +33,7 @@ request.interceptors.response.use(
     */
       const res = response.data
       if (res.code !== 10000) {
-          console.log(res.msg)
+        console.log(res.msg)
         Message({
           message: res.msg,
           type: 'error',
