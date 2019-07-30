@@ -12,7 +12,7 @@
         <el-col>
           <el-form ref="form" :model="form" label-width="100px" :inline="true">
             <el-form-item label="事记标题：">
-              <el-input v-model="form.name" placeholder="事记标题关键字"></el-input>
+              <el-input v-model="form.title" placeholder="事记标题关键字"></el-input>
             </el-form-item>
             <el-form-item label="作者：">
               <el-input v-model="form.name" placeholder="请输入作者名字"></el-input>
@@ -20,9 +20,9 @@
             <el-form-item label="发布日期：">
               <el-col>
                 <el-date-picker
-                  type="date"
+                  type="datetime"
                   placeholder="选择日期"
-                  v-model="form.date1"
+                  v-model="form.publishDate"
                   style="width: 100%;"
                 ></el-date-picker>
               </el-col>
@@ -39,12 +39,13 @@
         highlight-current-row
         @current-change="handleCurrentChange"
         style="width: 100%"
+        v-loading="loading"
       >
         <el-table-column type="index" width="50"></el-table-column>
         <el-table-column property="title" label="标题" width="150"></el-table-column>
         <el-table-column property="author" label="作者" width="80" align="center"></el-table-column>
         <el-table-column property="brief" label="摘要" min-width="200"></el-table-column>
-        <el-table-column property="publishDate" label="发布日期" width="100" align="center"></el-table-column>
+        <el-table-column property="publishDate" :formatter="dateFormat" label="发布日期" width="100" align="center" ></el-table-column>
         <el-table-column property="carousel" label="首页轮播" width="50"></el-table-column>
         <el-table-column property="carouselImgLink" label="轮播图片" width="200" align="center">
           <template slot-scope="scope">
@@ -91,6 +92,7 @@
 <script>
 
 import {eventList} from '@/api/event'
+import moment from 'moment'
 
 export default {
   data() {
@@ -100,69 +102,76 @@ export default {
         author: "",
         publishDate: "",
       },
+      loading: false,
       tableData: [
-        {
-          title: "2019中国工程机器人大赛暨国际公开赛",
-          author: "xizi",
-          brief:
-            "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩" +
-            "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-          publishDate: "2019-01-03",
-          carousel: "是",
-          carouselImgLink: "http://img.cnbaka.com/images/2019/07/08/4.jpg",
-          carouselEndDate: "2019-03-03"
-        },
-        {
-          title: "2019中国工程机器人大赛暨国际公开赛",
-          author: "xizi",
-          brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-          publishDate: "2019-01-03",
-          carousel: "是",
-          carouselImgLink: "http://img.cnbaka.com/images/2019/07/08/10.jpg",
-          carouselEndDate: "2019-10-02"
-        },
-        {
-          title: "2019中国工程机器人大赛暨国际公开赛",
-          author: "xizi",
-          brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-          publishDate: "2019-01-03",
-          carousel: "否",
-          carouselImgLink: "",
-          carouselEndDate: "无数据"
-        },
-        {
-          title: "2019中国工程机器人大赛暨国际公开赛",
-          author: "xizi",
-          brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-          publishDate: "2019-01-03",
-          carousel: "否",
-          carouselImgLink: "",
-          carouselEndDate: "无数据"
-        },
-        {
-          title: "2019中国工程机器人大赛暨国际公开赛",
-          author: "xizi",
-          brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-          publishDate: "2019-01-03",
-          carousel: "否",
-          carouselImgLink: "",
-          carouselEndDate: "无数据"
-        },
-        {
-          title: "2019中国工程机器人大赛暨国际公开赛",
-          author: "xizi",
-          brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-          publishDate: "2019-01-03",
-          carousel: "否",
-          carouselImgLink: "",
-          carouselEndDate: "无数据"
-        }
+        // {
+        //   title: "2019中国工程机器人大赛暨国际公开赛",
+        //   author: "xizi",
+        //   brief:
+        //     "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩" +
+        //     "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
+        //   publishDate: "2019-01-03",
+        //   carousel: "是",
+        //   carouselImgLink: "http://img.cnbaka.com/images/2019/07/08/4.jpg",
+        //   carouselEndDate: "2019-03-03"
+        // },
+        // {
+        //   title: "2019中国工程机器人大赛暨国际公开赛",
+        //   author: "xizi",
+        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
+        //   publishDate: "2019-01-03",
+        //   carousel: "是",
+        //   carouselImgLink: "http://img.cnbaka.com/images/2019/07/08/10.jpg",
+        //   carouselEndDate: "2019-10-02"
+        // },
+        // {
+        //   title: "2019中国工程机器人大赛暨国际公开赛",
+        //   author: "xizi",
+        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
+        //   publishDate: "2019-01-03",
+        //   carousel: "否",
+        //   carouselImgLink: "",
+        //   carouselEndDate: "无数据"
+        // },
+        // {
+        //   title: "2019中国工程机器人大赛暨国际公开赛",
+        //   author: "xizi",
+        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
+        //   publishDate: "2019-01-03",
+        //   carousel: "否",
+        //   carouselImgLink: "",
+        //   carouselEndDate: "无数据"
+        // },
+        // {
+        //   title: "2019中国工程机器人大赛暨国际公开赛",
+        //   author: "xizi",
+        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
+        //   publishDate: "2019-01-03",
+        //   carousel: "否",
+        //   carouselImgLink: "",
+        //   carouselEndDate: "无数据"
+        // },
+        // {
+        //   title: "2019中国工程机器人大赛暨国际公开赛",
+        //   author: "xizi",
+        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
+        //   publishDate: "2019-01-03",
+        //   carousel: "否",
+        //   carouselImgLink: "",
+        //   carouselEndDate: "无数据"
+        // }
       ]
     };
   },
   methods: {
+    dateFormat(row,column){
+      var date = row[column.property];
+        return moment(date).format("YYYY-MM-DD HH:mm:ss");
+    },
     listEvent(){
+      this.loading = true;
       eventList(this.form).then(response => {
+        this.loading = false;
         this.tableData = response.data.currentPageData
       })
     },

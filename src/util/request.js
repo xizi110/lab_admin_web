@@ -13,8 +13,6 @@ const request = Axios.create({
 request.interceptors.request.use(config => {
   // alert(store.state.token)
     var token = getToken();
-    console.log(token)
-    console.log(getToken())
     if (token) {
         config.headers['Authorization'] = token // 让每个请求携带自定义token 请根据实际情况自行修改
     }
@@ -33,26 +31,12 @@ request.interceptors.response.use(
     */
       const res = response.data
       if (res.code !== 10000) {
-        console.log(res.msg)
         Message({
           message: res.msg,
           type: 'error',
           duration: 3 * 1000
         })
-  
-        // 401:未登录;
-        // if (res.code === 401||res.code === 403) {
-        //   MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-        //     confirmButtonText: '重新登录',
-        //     cancelButtonText: '取消',
-        //     type: 'warning'
-        //   }).then(() => {
-        //     store.dispatch('FedLogOut').then(() => {
-        //       location.reload()// 为了重新实例化vue-router对象 避免bug
-        //     })
-        //   })
-        // }
-        return Promise.reject('error')
+        // return Promise.reject('error')
       } else {
         return response.data
       }
@@ -64,7 +48,7 @@ request.interceptors.response.use(
         type: 'error',
         duration: 3 * 1000
       })
-      return Promise.reject(error)
+      // return Promise.reject(error)
     }
   )
 

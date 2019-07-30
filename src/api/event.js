@@ -9,3 +9,13 @@ export function eventList(params){
 
     })
 }
+
+export function eventAdd(params){
+    return request({
+        url: '/event/add',
+        method: 'post',
+        dataType: 'json',
+        data: params,
+
+    })
+}
