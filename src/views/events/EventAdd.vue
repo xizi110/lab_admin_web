@@ -75,7 +75,7 @@
 
 <script>
 import CKEditor from "@/components/ckeditor/CKEditor";
-import { eventAdd } from "@/api/event";
+import { addEvent } from "@/api/event";
 import { Message, MessageBox } from "element-ui";
 
 export default {
@@ -134,15 +134,16 @@ export default {
       this.$refs[formname].validate(valid => {
         if (valid) {
           this.loading = true;
-          this.addEvent();
+          this.saveEvent();
         } else {
           return false;
         }
       });
     },
-    addEvent() {
-      eventAdd(this.form).then(response => {
+    saveEvent() {
+      addEvent(this.form).then(response => {
         this.loading = false;
+        console.log(response)
         if (response.code == 10000) {
           Message({
             message: response.msg,

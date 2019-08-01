@@ -10,7 +10,7 @@
 <script>
 import "@ckeditor/ckeditor5-build-decoupled-document/build/translations/zh-cn";
 import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
-
+import MyUploadAdapter from "./FileUpload"
 export default {
   name: "CKEditor",
   model: {
@@ -89,6 +89,10 @@ export default {
             "隶书",
             "幼圆"
           ]
+        },
+        cloudServices: {
+            // tokenUrl: 'https://example.com/cs-token-endpoint',
+            uploadUrl: 'http://127.0.0.1/upload'
         }
       })
         .then(editor => {
@@ -97,6 +101,9 @@ export default {
           document
             .querySelector("#toolbar")
             .appendChild(editor.ui.view.toolbar.element);
+            editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                return new MyUploadAdapter( loader );
+            };
         })
         .catch(err => {
           console.error(err.stack);

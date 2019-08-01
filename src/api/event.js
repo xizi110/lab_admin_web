@@ -1,18 +1,17 @@
 import request from '@/util/request'
 
-export function eventList(params){
+export function listEvent(params){
     return request({
-        url: '/event/list',
+        url: '/event',
         method: 'get',
         dataType: 'json',
-        data: params,
-
+        params: params
     })
 }
 
-export function eventAdd(params){
+export function addEvent(params){
     return request({
-        url: '/event/add',
+        url: '/event',
         method: 'post',
         dataType: 'json',
         data: params,

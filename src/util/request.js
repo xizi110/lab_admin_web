@@ -11,9 +11,9 @@ const request = Axios.create({
 
 // request拦截器
 request.interceptors.request.use(config => {
-  // alert(store.state.token)
+    var uri = request.getUri(config);
     var token = getToken();
-    if (token) {
+    if (uri != '/auth/login') {
         config.headers['Authorization'] = token // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     return config

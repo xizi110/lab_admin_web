@@ -4,8 +4,8 @@
       <el-row type="flex" align="middle">
         <el-col :span="10">搜索事记</el-col>
         <el-col :span="10" :offset="4" align="right">
-          <el-button icon="el-icon-refresh">重置</el-button>
-          <el-button type="primary" icon="el-icon-search">搜索</el-button>
+          <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -15,17 +15,7 @@
               <el-input v-model="form.title" placeholder="事记标题关键字"></el-input>
             </el-form-item>
             <el-form-item label="作者：">
-              <el-input v-model="form.name" placeholder="请输入作者名字"></el-input>
-            </el-form-item>
-            <el-form-item label="发布日期：">
-              <el-col>
-                <el-date-picker
-                  type="datetime"
-                  placeholder="选择日期"
-                  v-model="form.publishDate"
-                  style="width: 100%;"
-                ></el-date-picker>
-              </el-col>
+              <el-input v-model="form.author" placeholder="请输入作者名字"></el-input>
             </el-form-item>
           </el-form>
         </el-col>
@@ -40,13 +30,22 @@
         @current-change="handleCurrentChange"
         style="width: 100%"
         v-loading="loading"
+        max-height="700"
+        border
+
       >
-        <el-table-column type="index" width="50"></el-table-column>
-        <el-table-column property="title" label="标题" width="150"></el-table-column>
-        <el-table-column property="author" label="作者" width="80" align="center"></el-table-column>
-        <el-table-column property="brief" label="摘要" min-width="200"></el-table-column>
-        <el-table-column property="publishDate" :formatter="dateFormat" label="发布日期" width="100" align="center" ></el-table-column>
-        <el-table-column property="carousel" label="首页轮播" width="50"></el-table-column>
+        <el-table-column property="eventId" width="70" label="事记ID"></el-table-column>
+        <el-table-column property="title" label="事记标题" width="150"></el-table-column>
+        <el-table-column property="author" label="事记作者" width="80" align="center"></el-table-column>
+        <el-table-column property="brief" label="事记摘要" min-width="200"></el-table-column>
+        <el-table-column
+          property="publishDate"
+          :formatter="dateFormat"
+          label="发布日期"
+          width="100"
+          align="center"
+        ></el-table-column>
+        <el-table-column property="carousel" label="首页轮播" width="50" align="center"></el-table-column>
         <el-table-column property="carouselImgLink" label="轮播图片" width="200" align="center">
           <template slot-scope="scope">
             <el-image style="max-width: 90%;" :src="scope.row.carouselImgLink">
@@ -85,95 +84,64 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        class="page-container"
+        background
+        layout="prev, pager, next"
+        :total="total"
+        @current-change="page"
+      ></el-pagination>
     </el-card>
   </div>
 </template>
 
 <script>
-
-import {eventList} from '@/api/event'
-import moment from 'moment'
+import { listEvent, eventSearch } from "@/api/event";
+import moment from "moment";
 
 export default {
   data() {
     return {
       form: {
-        title: "",
-        author: "",
-        publishDate: "",
+        title: null,
+        author: null,
       },
       loading: false,
-      tableData: [
-        // {
-        //   title: "2019中国工程机器人大赛暨国际公开赛",
-        //   author: "xizi",
-        //   brief:
-        //     "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩" +
-        //     "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-        //   publishDate: "2019-01-03",
-        //   carousel: "是",
-        //   carouselImgLink: "http://img.cnbaka.com/images/2019/07/08/4.jpg",
-        //   carouselEndDate: "2019-03-03"
-        // },
-        // {
-        //   title: "2019中国工程机器人大赛暨国际公开赛",
-        //   author: "xizi",
-        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-        //   publishDate: "2019-01-03",
-        //   carousel: "是",
-        //   carouselImgLink: "http://img.cnbaka.com/images/2019/07/08/10.jpg",
-        //   carouselEndDate: "2019-10-02"
-        // },
-        // {
-        //   title: "2019中国工程机器人大赛暨国际公开赛",
-        //   author: "xizi",
-        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-        //   publishDate: "2019-01-03",
-        //   carousel: "否",
-        //   carouselImgLink: "",
-        //   carouselEndDate: "无数据"
-        // },
-        // {
-        //   title: "2019中国工程机器人大赛暨国际公开赛",
-        //   author: "xizi",
-        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-        //   publishDate: "2019-01-03",
-        //   carousel: "否",
-        //   carouselImgLink: "",
-        //   carouselEndDate: "无数据"
-        // },
-        // {
-        //   title: "2019中国工程机器人大赛暨国际公开赛",
-        //   author: "xizi",
-        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-        //   publishDate: "2019-01-03",
-        //   carousel: "否",
-        //   carouselImgLink: "",
-        //   carouselEndDate: "无数据"
-        // },
-        // {
-        //   title: "2019中国工程机器人大赛暨国际公开赛",
-        //   author: "xizi",
-        //   brief: "我们团队在2019中国工程机器人大赛暨国际公开赛中取得优异成绩",
-        //   publishDate: "2019-01-03",
-        //   carousel: "否",
-        //   carouselImgLink: "",
-        //   carouselEndDate: "无数据"
-        // }
-      ]
+      tableData: [],
+      allTableData: [],
+      currentPageRow: 10,
+      total: 1 ,
+
     };
   },
   methods: {
-    dateFormat(row,column){
+    // 日期格式化，解决timestamp前台显示long
+    dateFormat(row, column) {
       var date = row[column.property];
-        return moment(date).format("YYYY-MM-DD HH:mm:ss");
+      return moment(date).format("YYYY-MM-DD HH:mm:ss");
     },
-    listEvent(){
+
+    // currentPage改变时，重新加载数据
+    loadData() {
       this.loading = true;
-      eventList(this.form).then(response => {
+      listEvent(this.form).then(response => {
         this.loading = false;
-        this.tableData = response.data.currentPageData
-      })
+        // var pageData = response.data.slice(0, 10);
+        // console.log(pageData)
+        this.allTableData = response.data;
+        this.total = this.allTableData.length;
+        this.tableData = this.allTableData.slice(0, this.currentPageRow);
+      });
+    },
+
+    // 点击搜索，当前页默认为1
+    search() {
+      this.loadData();
+    },
+
+    page(page) {
+      var index = (page - 1) * this.currentPageRow;
+      this.tableData = this.allTableData.slice(index, index + this.currentPageRow);
     },
 
     setCurrent(row) {
@@ -181,17 +149,25 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentRow = val;
+    },
+    reset(){
+      this.form.title="";
+      this.form.author="";
     }
   },
-   created() {
-    this.listEvent();
-  },
+  created() {
+    this.loadData();
+  }
 };
-
 </script>
 
 <style>
 .el-card-container {
   margin-top: 20px;
+}
+.page-container {
+  text-align: center;
+  margin-top: 20px;
+  padding: 5px;
 }
 </style>
