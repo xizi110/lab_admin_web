@@ -131,6 +131,7 @@ export default {
       this.form.carouselEndDate = "";
     },
     submitForm(formname) {
+      console.log(this.form.content)
       this.$refs[formname].validate(valid => {
         if (valid) {
           this.loading = true;
