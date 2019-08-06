@@ -18,3 +18,14 @@ export function addEvent(params){
 
     })
 }
+
+export function deleteEvent(eventId){
+    return request({
+        url: '/event',
+        method: 'delete',
+        dataType: 'json',
+        params: {
+            eventId
+        }
+    })
+}

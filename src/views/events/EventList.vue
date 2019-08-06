@@ -32,7 +32,6 @@
         v-loading="loading"
         max-height="700"
         border
-
       >
         <el-table-column property="eventId" width="70" label="事记ID"></el-table-column>
         <el-table-column property="title" label="事记标题" width="150"></el-table-column>
@@ -77,7 +76,7 @@
               <el-button
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
+                @click="handleDelete(scope.row.eventId)"
                 class="el-icon-delete-solid"
               >删除</el-button>
             </p>
@@ -89,14 +88,15 @@
         background
         layout="prev, pager, next"
         :total="total"
-        @current-change="page"
+        @current-change="changePage"
+        :page-size="currentPageRow"
       ></el-pagination>
     </el-card>
   </div>
 </template>
 
 <script>
-import { listEvent, eventSearch } from "@/api/event";
+import { listEvent, eventSearch, deleteEvent } from "@/api/event";
 import moment from "moment";
 
 export default {
@@ -105,15 +105,15 @@ export default {
       form: {
         title: null,
         author: null,
+        page: null
       },
       loading: false,
       tableData: [],
-      allTableData: [],
-      currentPageRow: 10,
-      total: 1 ,
-
+      currentPageRow: 30,
+      total: 0
     };
   },
+
   methods: {
     // 日期格式化，解决timestamp前台显示long
     dateFormat(row, column) {
@@ -121,27 +121,26 @@ export default {
       return moment(date).format("YYYY-MM-DD HH:mm:ss");
     },
 
-    // currentPage改变时，重新加载数据
+    // 请求服务器，加载数据
     loadData() {
       this.loading = true;
       listEvent(this.form).then(response => {
         this.loading = false;
-        // var pageData = response.data.slice(0, 10);
-        // console.log(pageData)
-        this.allTableData = response.data;
-        this.total = this.allTableData.length;
-        this.tableData = this.allTableData.slice(0, this.currentPageRow);
+        this.tableData = response.data;
+        this.total = this.tableData.length;
       });
     },
 
     // 点击搜索，当前页默认为1
     search() {
+      this.form.page = 1;
       this.loadData();
     },
 
-    page(page) {
-      var index = (page - 1) * this.currentPageRow;
-      this.tableData = this.allTableData.slice(index, index + this.currentPageRow);
+    //  当前页发生改变
+    changePage(page) {
+      this.form.page = page;
+      loadData();
     },
 
     setCurrent(row) {
@@ -150,13 +149,51 @@ export default {
     handleCurrentChange(val) {
       this.currentRow = val;
     },
-    reset(){
-      this.form.title="";
-      this.form.author="";
+    // 删除操作
+    handleDelete(eventId) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "确认删除", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          deleteEvent(eventId).then(response => {
+            if (response.code == 10000) {
+              var index = -1;
+              for (var i = 0; i < this.tableData.length; i++) {
+                if (this.tableData[i].eventId == eventId) {
+                  index = i;
+                  break;
+                }
+              }
+              if (index != -1) {
+                this.$message({
+                  type: "success",
+                  message: response.msg
+                });
+                this.tableData.splice(index, 1);
+              }
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "删除操作已被取消"
+          });
+        });
+    },
+    // 清空界面
+    reset() {
+      this.form.title = null;
+      this.form.author = null;
+      this.tableData = null;
     }
   },
+  // 初始化表格
   created() {
-    this.loadData();
+    this.form.page = 1;
+    this.loadData(this.form);
   }
 };
 </script>
