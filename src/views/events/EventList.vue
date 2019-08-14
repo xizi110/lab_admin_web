@@ -33,7 +33,7 @@
         max-height="700"
         border
       >
-        <el-table-column property="eventId" width="70" label="事记ID"></el-table-column>
+        <el-table-column property="eventId" width="90" label="事记ID" sortable align="center"></el-table-column>
         <el-table-column property="title" label="事记标题" width="150"></el-table-column>
         <el-table-column property="author" label="事记作者" width="80" align="center"></el-table-column>
         <el-table-column property="brief" label="事记摘要" min-width="200"></el-table-column>
@@ -41,10 +41,11 @@
           property="publishDate"
           :formatter="dateFormat"
           label="发布日期"
-          width="100"
+          width="102"
+          sortable
           align="center"
         ></el-table-column>
-        <el-table-column property="carousel" label="首页轮播" width="50" align="center"></el-table-column>
+        <el-table-column property="carousel" :formatter="judgeFormat" label="首页轮播" width="50" align="center"></el-table-column>
         <el-table-column property="carouselImgLink" label="轮播图片" width="200" align="center">
           <template slot-scope="scope">
             <el-image style="max-width: 90%;" :src="scope.row.carouselImgLink">
@@ -89,7 +90,7 @@
         layout="prev, pager, next"
         :total="total"
         @current-change="changePage"
-        :page-size="currentPageRow"
+        :page-size="pageSize"
       ></el-pagination>
     </el-card>
   </div>
@@ -109,7 +110,7 @@ export default {
       },
       loading: false,
       tableData: [],
-      currentPageRow: 30,
+      pageSize: 0,
       total: 0
     };
   },
@@ -120,14 +121,19 @@ export default {
       var date = row[column.property];
       return moment(date).format("YYYY-MM-DD HH:mm:ss");
     },
+    judgeFormat(row, column) {
+      var isCarousel = row[column.property];
+      return isCarousel == 1 ? "是" : "否";
+    },
 
     // 请求服务器，加载数据
     loadData() {
       this.loading = true;
       listEvent(this.form).then(response => {
         this.loading = false;
-        this.tableData = response.data;
-        this.total = this.tableData.length;
+        this.tableData = response.data.currentPageData;
+        this.total = response.data.totalCount;
+        this.pageSize = response.data.pageCount;
       });
     },
 
@@ -140,7 +146,7 @@ export default {
     //  当前页发生改变
     changePage(page) {
       this.form.page = page;
-      loadData();
+      this.loadData();
     },
 
     setCurrent(row) {

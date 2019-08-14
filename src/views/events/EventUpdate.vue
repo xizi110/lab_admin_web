@@ -4,7 +4,7 @@
       <el-row type="flex" align="middle">
         <el-page-header @back="goBack" content="更新事记">
         </el-page-header>
-        <el-col :span="10" :offset="4" align="right">
+        <el-col :span="5" :offset="15" align="right">
           <el-button
             type="primary"
             icon="el-icon-s-promotion"

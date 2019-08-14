@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { login } from '@/api/auth'
-import { getToken, setToken } from '../util/auth';
+import { getToken, setToken_Username, setUser } from '../util/auth';
 
 Vue.use(Vuex)
 
@@ -9,6 +9,9 @@ const store = new Vuex.Store({
     state: {
         token: getToken(),
         username: "",
+    },
+    getters:{
+        username: state => state.username
     },
     mutations: {
         SET_TOKEN: (state, token) => {
@@ -29,8 +32,9 @@ const store = new Vuex.Store({
                     if (response.code == 10000) {
                         const data = response.data
                         const tokenStr = data.token
-                        setToken(tokenStr)
+                        setToken_Username(tokenStr,username)
                         commit('SET_TOKEN', tokenStr)
+                        console.log(username)
                         commit('SET_USERNAME', username)
                     }
                     resolve()

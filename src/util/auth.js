@@ -1,15 +1,26 @@
 import Cookies from 'js-cookie'
 
 const TokenKey = 'loginToken'
+const User = 'username'
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  // Cookies.get(TokenKey);
+  return sessionStorage.getItem(TokenKey);
 }
 
-export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+export function getUser() {
+  // Cookies.get(TokenKey);
+  return sessionStorage.getItem(User);
 }
 
-export function removeToken() {
-  return Cookies.remove(TokenKey)
+export function setToken_Username(token,username) {
+  sessionStorage.setItem(TokenKey, token);
+  sessionStorage.setItem(User, username);
+  // return Cookies.set(TokenKey, token);
+}
+
+export function removeToken_User() {
+  sessionStorage.removeItem(TokenKey);
+  sessionStorage.removeItem(User);
+  // return Cookies.remove(TokenKey);
 }

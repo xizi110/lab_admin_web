@@ -9,7 +9,7 @@
         </el-breadcrumb>
       </el-menu-item>
       <el-submenu index="1" style="float: right; margin-right: 2em;">
-        <template slot="title">李泽众</template>
+        <template slot="title">{{username}}</template>
         <el-menu-item index="1-1">账户信息</el-menu-item>
         <el-menu-item index="1-2">设置</el-menu-item>
         <el-menu-item index="1-3">退出登录</el-menu-item>
@@ -19,9 +19,12 @@
 </template>
 
 <script>
+import { getUser } from '@/util/auth'
 export default {
   data() {
-    return {};
+    return {
+        username: getUser()
+    };
   },
   methods: {
     handleSelect(key, keyPath) {
