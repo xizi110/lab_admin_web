@@ -1,16 +1,16 @@
 <template>
-  <div>
-    <el-card class="el-card-container">
+  <div class="container">
+    <el-card class="el-card-container" :loading="loading">
       <el-row type="flex" align="middle">
-        <el-col :span="10">添加事记</el-col>
+        <el-page-header @back="goBack" content="更新事记">
+        </el-page-header>
         <el-col :span="10" :offset="4" align="right">
-          <el-button icon="el-icon-refresh" @click="clean">重置</el-button>
           <el-button
             type="primary"
             icon="el-icon-s-promotion"
             @click="submitForm('form')"
             :loading="loading"
-          >提交</el-button>
+          >保存</el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -66,17 +66,18 @@
       </el-row>
     </el-card>
 
-    <!-- <el-card class="el-card-container"> -->
-    <CKEditor v-model="form.content"></CKEditor>
-    <!-- </el-card> -->
+    <el-card class="el-card-container">
+    <CKEditor ref="child" v-model="form.content" ></CKEditor>
+    </el-card>
   </div>
 </template>
 
 
 <script>
 import CKEditor from "@/components/ckeditor/CKEditor";
-import { addEvent } from "@/api/event";
+import { updateEvent, getEvent } from "@/api/event";
 import { Message, MessageBox } from "element-ui";
+// import store from '@/store/index'
 
 export default {
   data() {
@@ -88,8 +89,10 @@ export default {
         carouselImgLink: "",
         carouselEndDate: "",
         content: "",
-        brief: ""
+        brief: "",
+        eventId: ""
       },
+      
       isCarousel: [
         {
           label: "否",
@@ -124,25 +127,23 @@ export default {
   },
 
   methods: {
-    clean() {
-      this.form.title = "";
-      this.form.carousel = 0;
-      this.form.carouselImgLink = "";
-      this.form.carouselEndDate = "";
+    goBack(){
+      this.$router.push("/event/list")
     },
     submitForm(formname) {
-      console.log(this.form.content)
+      // console.log(this.form);
+      // return;
       this.$refs[formname].validate(valid => {
         if (valid) {
           this.loading = true;
-          this.saveEvent();
+          this.eventUpdate();
         } else {
           return false;
         }
       });
     },
-    saveEvent() {
-      addEvent(this.form).then(response => {
+    eventUpdate() {
+      updateEvent(this.form).then(response => {
         this.loading = false;
         if (response && response.code == 10000) {
           Message({
@@ -154,14 +155,25 @@ export default {
       });
     }
   },
+  created() {
+    this.eventId = this.$route.query.eventId;
+    var id = this.eventId;
+    if(id){
+      getEvent(this.eventId).then(response => {
+        this.form = response.data;
+        // 向编辑器设置内容
+        this.$refs.child.setData(this.form.content);
+      })
+    }
+  },
   components: {
     CKEditor
   }
 };
 </script>
 
-<style>
-.el-card-container {
+<style scoped>
+.container {
   margin-top: 20px;
 }
 </style>

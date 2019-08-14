@@ -3,7 +3,7 @@
     <!-- 工具栏容器 -->
     <div id="toolbar" @click="change"></div>
     <!-- 编辑器容器 -->
-    <div id="editor" :value="value" @keyup="change" @click="change"></div>
+    <div id="editor" ref="child" :value="value" @keyup="change" ></div>
   </div>
 </template>
 
@@ -11,26 +11,34 @@
 import "@ckeditor/ckeditor5-build-decoupled-document/build/translations/zh-cn";
 import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
 import MyUploadAdapter from "./FileUpload"
+var i = 0;
 export default {
   name: "CKEditor",
   model: {
     prop: "value",
-    event: "returnVal"
+    event: 'change'
   },
   props: {
-    value: ""
+    value: String,
   },
   data() {
     return {
       editor: "" //编辑器实例
     };
   },
+ 
   mounted() {
     this.initCKEditor();
   },
+  
   methods: {
+    // 设置编辑框内容
+    setData(data) {
+        this.editor.setData(data)
+    },
+    // 内容变化时返回父组件
     change() {
-      this.$emit("returnVal", this.editor.getData());
+      this.$emit('change', this.editor.getData())
     },
     initCKEditor() {
       DecoupledEditor.builtinPlugins.map(plugin => plugin.pluginName);
@@ -109,7 +117,8 @@ export default {
           console.error(err.stack);
         });
     }
-  }
+  },
+
 };
 </script>
 

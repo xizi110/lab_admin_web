@@ -8,7 +8,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         token: getToken(),
-        username: ""
+        username: "",
     },
     mutations: {
         SET_TOKEN: (state, token) => {
@@ -16,7 +16,7 @@ const store = new Vuex.Store({
         },
         SET_USERNAME: (state, username) => {
             state.username = username
-        }
+        },
     },
     actions: {
         Login({ commit }, form) {

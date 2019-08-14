@@ -1,5 +1,13 @@
 import request from '@/util/request'
 
+export function getEvent(eventId){
+    return request({
+        url: '/event/' + eventId,
+        method: 'get',
+        dataType: 'json',
+    })
+}
+
 export function listEvent(params){
     return request({
         url: '/event',
@@ -27,5 +35,14 @@ export function deleteEvent(eventId){
         params: {
             eventId
         }
+    })
+}
+
+export function updateEvent(form){
+    return request({
+        url: '/event',
+        method: 'put',
+        dataType: 'json',
+        data: form,
     })
 }

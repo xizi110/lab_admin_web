@@ -13,7 +13,7 @@ const request = Axios.create({
 request.interceptors.request.use(config => {
     var uri = request.getUri(config);
     var token = getToken();
-    if (uri != '/auth/login') {
+    if (uri != '/auth/login' && token) {
         config.headers['Authorization'] = token // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     return config

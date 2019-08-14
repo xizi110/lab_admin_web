@@ -41,7 +41,7 @@ export default new Router({
                     name: "list",
                     component: () =>
                         import ("@/views/events/EventList"),
-                    meta: { title: "事记列表", icon: "" }
+                    meta: { title: "事记列表", icon: "", keepAlive: true }
                 },
                 {
                     path: "add",
@@ -49,6 +49,12 @@ export default new Router({
                     component: () =>
                         import ("@/views/events/EventAdd"),
                     meta: { title: "添加事记", icon: "" }
+                },
+                {
+                    path: "update",
+                    name: "update",
+                    component: () => import ("@/views/events/EventUpdate"),
+                    meta: { title: "更新事记", icon: ""}
                 }
             ]
         }

@@ -63,7 +63,7 @@
               >查看</el-button>
               <el-button
                 size="mini"
-                @click="handleUpdateProduct(scope.$index, scope.row)"
+                @click="handleUpdate(scope.row.eventId)"
                 class="el-icon-edit-outline"
               >编辑</el-button>
             </p>
@@ -183,6 +183,15 @@ export default {
           });
         });
     },
+    // 跳转编辑页面
+    handleUpdate(eventId){
+      this.$router.push({
+        path: '/event/update',
+        query:{
+          eventId: eventId,
+        }
+      })
+    },
     // 清空界面
     reset() {
       this.form.title = null;
@@ -194,7 +203,7 @@ export default {
   created() {
     this.form.page = 1;
     this.loadData(this.form);
-  }
+  },
 };
 </script>
 
